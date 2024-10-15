@@ -86,4 +86,5 @@ st.button(
     on_click=upload_csv,
     args=(drive, st.session_state["df"], "all_mp3_files.csv"),
     type="primary",
+    icon=":material/add_to_drive:",
 )

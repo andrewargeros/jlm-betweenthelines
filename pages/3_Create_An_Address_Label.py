@@ -55,7 +55,3 @@ with st.form(key="address_form"):
             "state": state,
             "zip": zip_code,
         }
-
-t = html_template.format(**st.session_state.address)
-
-st.markdown(t, unsafe_allow_html=True)

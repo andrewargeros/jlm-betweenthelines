@@ -56,15 +56,22 @@ def save_all_qr_codes(df):
 
 
 def load_drive_csv(drive):
-    file_id = "19X1I-K__Oq-f_ADcbEZZk430X1JdK8Ib"
-    file = drive.CreateFile({"id": file_id})
-    file.GetContentFile("all_mp3_files.csv")
-    return pd.read_csv("all_mp3_files.csv")
+    try:
+        file_id = "19X1I-K__Oq-f_ADcbEZZk430X1JdK8Ib"
+        file = drive.CreateFile({"id": file_id})
+        file.GetContentFile("all_mp3_files.csv")
+        return pd.read_csv("all_mp3_files.csv")
+    except:
+        return st.error(
+            "Error loading file from Google Drive-- Please try Syncing again."
+        )
 
 
 def create_button():
     st.session_state["create"] = True
 
+
+st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 
 if "df" not in st.session_state:
     drive = create_drive()
@@ -73,7 +80,6 @@ if "df" not in st.session_state:
 if "create" not in st.session_state:
     st.session_state.create = False
 
-st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)

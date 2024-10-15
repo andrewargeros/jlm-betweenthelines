@@ -14,7 +14,7 @@ footer {
     height: 0.5rem;
     /* background-image: linear-gradient(to right, #A768FD 0%, #6200EA 51%, #A768FD 100%); */
     background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
-    background-size: 100% auto;
+    background-size: 200% auto;
     transition: 0.75s;
     z-index: 1000020;
 }
@@ -240,7 +240,19 @@ span[role="button"] {
 .st-emotion-cache-1jicfl2,
 .ea3mdgi5 {
     background-color: #0f1116;
-    width: 85% !important;
+    width: 90% !important;
+}
+
+.st-emotion-cache-h4xjwg {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 0.75rem;
+    background: rgb(14, 17, 23);
+    outline: none;
+    z-index: 999990;
+    display: block;
 }
 
 .stDeployButton,

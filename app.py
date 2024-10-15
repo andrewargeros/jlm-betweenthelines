@@ -4,6 +4,9 @@ from PIL import Image
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
 st.set_page_config(page_title="Between the Lines", page_icon=JLM_LOGO)
 
+with open(".streamlit/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 c1, c2 = st.columns([1, 5])
 
 with c1:
@@ -17,7 +20,8 @@ st.markdown(
 
     This app is designed to help Junior League volunteers manage the process of syncing files from Google Drive, creating address labels, creating QR codes, and parsing who's reading what.
     
-    <br><br>
+    <br>
+
     ### **What would you like to do?**
     """,
     unsafe_allow_html=True,
@@ -28,7 +32,7 @@ g1, g2 = st.columns(2)
 with g1:
     st.page_link(
         "pages/1_Sync_Google_Drive.py",
-        label="**Sync Files from Google Drive**",
+        label="**Sync** Files from Google Drive",
         icon=":material/add_to_drive:",
         use_container_width=True,
     )
@@ -36,6 +40,12 @@ with g1:
         "pages/3_Create_An_Address_Label.py",
         label="**Create an Address Label**",
         icon=":material/contact_mail:",
+        use_container_width=True,
+    )
+    st.page_link(
+        "pages/5_View_or_Edit_Inventory.py",
+        label="**View/Edit Inventory**",
+        icon=":material/shelves:",
         use_container_width=True,
     )
 

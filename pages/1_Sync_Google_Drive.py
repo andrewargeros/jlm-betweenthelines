@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 from PIL import Image
 
+file_path = str(Path(__file__).parent)
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
 
 
@@ -58,6 +60,9 @@ if "df" not in st.session_state:
     st.session_state.df = pd.DataFrame(columns=["subfolder", "title", "id", "link"])
 
 st.set_page_config(page_title="Load Files from Drive", page_icon=JLM_LOGO)
+
+with open(".streamlit/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 c1, c2 = st.columns([1, 5])
 

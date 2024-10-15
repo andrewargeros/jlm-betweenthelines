@@ -58,6 +58,9 @@ if "df" not in st.session_state:
 
 st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 
+with open(".streamlit/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 c1, c2 = st.columns([1, 5])
 
 with c1:

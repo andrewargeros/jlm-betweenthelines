@@ -6,6 +6,14 @@ JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
 
 st.set_page_config(page_title="Create an Address Label", page_icon=JLM_LOGO)
 
+with open(".streamlit/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+html_template = open("address_label_template.html").read()
+
+if "address" not in st.session_state:
+    st.session_state.address = {}
+
 c1, c2 = st.columns([1, 5])
 
 with c1:
@@ -38,3 +46,16 @@ with st.form(key="address_form"):
                 <p>{city}, {state} {zip_code}</p>""",
             unsafe_allow_html=True,
         )
+
+        st.session_state.address = {
+            "name": name,
+            "address_1": address,
+            "address_2": address2,
+            "city": city,
+            "state": state,
+            "zip": zip_code,
+        }
+
+t = html_template.format(**st.session_state.address)
+
+st.markdown(t, unsafe_allow_html=True)

@@ -1,0 +1,265 @@
+/* button[title="View fullscreen"],
+footer {
+    visibility: hidden;
+} */
+
+.css-1dp5vir,
+.st-emotion-cache-1dp5vir,
+.ezrtsby1 {
+    /* This adds the Sermo graident to the top of the site */
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    height: 0.5rem;
+    /* background-image: linear-gradient(to right, #A768FD 0%, #6200EA 51%, #A768FD 100%); */
+    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
+    background-size: 100% auto;
+    transition: 0.75s;
+    z-index: 1000020;
+}
+
+.css-1dp5vir:hover {
+    background-position: right center;
+}
+
+.css-glk7yy,
+.css-15zrgzn,
+.e16nr0p32 {
+    /* This hides Streamlit's link anchors */
+    display: none
+}
+
+
+@font-face {
+    font-family: 'Sailec';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-bold.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-bold.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-bold.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-bold.woff') format('woff'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: 'Sailec';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-medium.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-medium.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-medium.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-medium.woff') format('woff'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/sailec-medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Semibold-Web.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Semibold-Web.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Semibold-Web.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Semibold-Web.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Medium-Web.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Medium-Web.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Medium-Web.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Medium-Web.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-RegularItalic-Web.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-RegularItalic-Web.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-RegularItalic-Web.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-RegularItalic-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+    font-stretch: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Regular-Web.eot');
+    src: url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Regular-Web.eot?#iefix') format('embedded-opentype'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Regular-Web.woff2') format('woff2'), url('https://sermo-mktg.s3.amazonaws.com/fonts/webfonts/Graphik-Regular-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    mso-font-alt: 'Arial';
+}
+
+@font-face {
+    font-family: "San Francisco Display Ultralight";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.svg#San Francisco Display Ultralight") format("svg")
+}
+
+@font-face {
+    font-family: "San Francisco Display Thin";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.svg#San Francisco Display Thin") format("svg")
+}
+
+@font-face {
+    font-family: "San Francisco Display Medium";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.svg#San Francisco Display Medium") format("svg")
+}
+
+@font-face {
+    font-family: "San Francisco Display Semibold";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.svg#San Francisco Display Semibold") format("svg")
+}
+
+@font-face {
+    font-family: "San Francisco Display Bold";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.eot?#iefix) format("embedded-opentype"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff2) format("woff2"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff) format("woff"), url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.ttf) format("truetype"), url("fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.svg#San Francisco Display Bold") format("svg")
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9WdhyyTh89ZNpQ.woff2) format('woff2');
+    unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9WlhyyTh89Y.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+
+}
+
+h1 {
+    font-family: 'Bebas Neue';
+    color: #FFFFFF;
+    font-size: 4.75rem;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Bebas Neue';
+    color: #FFFFFF;
+}
+
+p {
+    font-family: 'San Francisco Display Thin';
+    color: #FFFFFF;
+}
+
+body,
+input,
+select,
+textarea,
+li,
+td,
+th,
+.st-ae,
+.css-1inwz65,
+.css-1kvv7ts,
+.st-e3,
+.st-cr,
+.st-bz,
+.st-dc,
+.st-dd,
+.st-e4 {
+    font-family: 'San Francisco Display Ultralight';
+    color: #FFFFFF;
+}
+
+button[kind="primary"], .st-emotion-cache-yk7at5, .ef3psqc12 {
+    width: 100%;
+    flex: 1 1 auto;
+    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
+    background-size: 200% auto;
+    color: #0F1116;
+    transition: 0.5s;
+    font-family: 'San Francisco Display Bold';
+}
+
+button[kind="primary"]:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+}
+
+button[kind="primary"]>div>p {
+    font-family: 'San Francisco Display Medium';
+    /* change the direction of the change here */
+}
+
+
+button[kind="secondary"] {
+    width: 100%;
+    flex: 1 1 auto;
+    /* background-image: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+  background-size: 200% auto;
+  color: #0F1116;
+  transition: 0.5s; */
+    font-family: 'San Francisco Display Bold';
+}
+
+
+span[role="button"] {
+    font-family: 'San Francisco Display Semibold';
+    color: #0F1116;
+}
+
+
+
+.appview-container,
+.css-1wrcr25,
+.egzxvld4 {
+    background-color: #0f1116;
+    opacity: 0.8;
+    background-image: linear-gradient(#282a2f 3.4000000000000004px, transparent 3.4000000000000004px), linear-gradient(90deg, #282a2f 3.4000000000000004px, transparent 3.4000000000000004px), linear-gradient(#282a2f 1.7000000000000002px, transparent 1.7000000000000002px), linear-gradient(90deg, #282a2f 1.7000000000000002px, #0f1116 1.7000000000000002px);
+    background-size: 85px 85px, 85px 85px, 17px 17px, 17px 17px;
+    background-position: -3.4000000000000004px -3.4000000000000004px, -3.4000000000000004px -3.4000000000000004px, -1.7000000000000002px -1.7000000000000002px, -1.7000000000000002px -1.7000000000000002px;
+}
+
+.block-container,
+.css-12oz5g7,
+.egzxvld2,
+.stAppViewBlockContainer,
+.block-container,
+.st-emotion-cache-1jicfl2,
+.ea3mdgi5 {
+    background-color: #0f1116;
+    width: 85% !important;
+}
+
+.stDeployButton,
+.st-emotion-cache-1wbqy5l,
+.e17vllj40 {
+    display: none
+}
+
+.st-emotion-cache-ubko3j,
+.e1nzilvr4 {
+    display: none;
+}
+
+.stPageLink {
+    height: 45px;
+    border: 2px solid #282a2f;
+    border-radius: 10px;
+}
+
+.stPageLink:hover {
+    background-color: #b31217;
+}

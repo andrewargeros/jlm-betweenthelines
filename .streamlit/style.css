@@ -13,7 +13,7 @@ footer {
     left: 0px;
     height: 0.5rem;
     /* background-image: linear-gradient(to right, #A768FD 0%, #6200EA 51%, #A768FD 100%); */
-    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
+    background-image: linear-gradient(to right, #AC2539 0%, #b31217 51%, #e52d27 100%);
     background-size: 200% auto;
     transition: 0.75s;
     z-index: 1000020;
@@ -186,7 +186,7 @@ th,
 button[kind="primary"], .st-emotion-cache-yk7at5, .ef3psqc12 {
     width: 100%;
     flex: 1 1 auto;
-    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
+    background-image: linear-gradient(to right, #AC2539 0%, #b31217 51%, #e52d27 100%);
     background-size: 200% auto;
     color: #0F1116;
     transition: 0.5s;
@@ -273,5 +273,5 @@ span[role="button"] {
 }
 
 .stPageLink:hover {
-    background-color: #b31217;
+    background-color: #AC2539;
 }

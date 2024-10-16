@@ -7,8 +7,17 @@ from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 from io import BytesIO
 from datetime import datetime
+from supabase import create_client, Client
 
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
+
+
+@st.cache_resource
+def create_supa_client():
+    url: str = st.secrets["SUPABASE_URL"]
+    key: str = st.secrets["SUPABASE_KEY"]
+    supabase: Client = create_client(url, key)
+    return supabase
 
 
 @st.cache_resource
@@ -73,14 +82,6 @@ def create_button():
 
 st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 
-if "df" not in st.session_state:
-    drive = create_drive()
-    st.session_state.df = load_drive_csv(drive)
-
-if "create" not in st.session_state:
-    st.session_state.create = False
-
-
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
@@ -92,10 +93,35 @@ with c2:
     st.title("Between the Lines")
 st.subheader("Create a QR Code")
 
+if "supabase" not in st.session_state:
+    st.session_state.supabase = create_supa_client()
+
+if "df" not in st.session_state:
+    json_data = (
+        st.session_state.supabase.table("book_orders")
+        .select(
+            "inmate_name, book_inventory(book_title), address_name, mp3_files(file_name, drive_link)"
+        )
+        .execute()
+        .data
+    )
+    st.session_state.df = pd.json_normalize(json_data).drop(columns=["mp3_files"])
+    st.session_state.df.columns = [
+        "inmate_name",
+        "recipient",
+        "title",
+        "file_name",
+        "link",
+    ]
+    st.session_state.df = st.session_state.df.query("link.notnull()")
+
+if "create" not in st.session_state:
+    st.session_state.create = False
+
 st.dataframe(st.session_state["df"], hide_index=True)
 
 choice = st.selectbox(
-    "Select a file to create a QR code", st.session_state["df"]["title"]
+    "Select a file to create a QR code", st.session_state["df"]["file_name"]
 )
 
 create1, create2 = st.columns(2)

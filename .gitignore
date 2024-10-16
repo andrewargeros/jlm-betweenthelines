@@ -5,3 +5,4 @@ media/
 client_secrets.json
 mycreds.txt
 all_mp3_files.csv
+secrets.toml

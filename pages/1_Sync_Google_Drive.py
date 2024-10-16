@@ -4,9 +4,18 @@ from pathlib import Path
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 from PIL import Image
+from supabase import create_client, Client
 
 file_path = str(Path(__file__).parent)
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
+
+
+@st.cache_resource
+def create_supa_client():
+    url: str = st.secrets["SUPABASE_URL"]
+    key: str = st.secrets["SUPABASE_KEY"]
+    supabase: Client = create_client(url, key)
+    return supabase
 
 
 @st.cache_resource
@@ -43,23 +52,27 @@ def list_files(drive):
     return pd.DataFrame(all_files)
 
 
-def upload_csv(drive, df, filename):
-    df.to_csv(filename, index=False)
-    file1 = drive.CreateFile(
-        {
-            "title": filename,
-            "parents": [{"id": "19X1I-K__Oq-f_ADcbEZZk430X1JdK8Ib"}],
-        }
-    )
-    file1.SetContentFile(filename)
-    file1.Upload()
-    return "Created file %s with mimeType %s" % (file1["title"], file1["mimeType"])
+def upload_csv(drive_df, supa_df, supabase):
+    upload = drive_df.query("id not in @supa_df['id']")
+    upload = upload[["id", "title", "link"]].to_dict(orient="records")
+    supabase.table("mp3_files").insert(upload).execute()
 
-
-if "df" not in st.session_state:
-    st.session_state.df = pd.DataFrame(columns=["subfolder", "title", "id", "link"])
 
 st.set_page_config(page_title="Load Files from Drive", page_icon=JLM_LOGO)
+
+if "supabase" not in st.session_state:
+    st.session_state.supabase = create_supa_client()
+
+if "mp3_df" not in st.session_state:
+    st.session_state.mp3_df = pd.DataFrame(
+        st.session_state.supabase.table("mp3_files").select("*").execute().data
+    )
+
+if "drive_files" not in st.session_state:
+    st.session_state.drive_files = pd.DataFrame(
+        columns=["subfolder", "title", "id", "link"]
+    )
+
 
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -73,18 +86,51 @@ with c2:
 st.subheader("Load Files from Google Drive")
 
 drive = create_drive()
-st.session_state["df"] = pd.concat(
-    [st.session_state["df"], list_files(drive)]
+st.session_state["drive_files"] = pd.concat(
+    [st.session_state["drive_files"], list_files(drive)]
 ).drop_duplicates()
 
-st.dataframe(st.session_state["df"], hide_index=True)
+st.dataframe(st.session_state["mp3_df"], hide_index=True)
 
-st.markdown(f"Current number of files: {len(st.session_state['df'])}")
+
+foo = st.session_state["drive_files"].query(
+    "id not in @st.session_state['mp3_df']['id']"
+)
+
+if not foo.empty:
+    st.markdown(f"Additional Files to Add: {len(foo)}")
+    st.dataframe(foo, hide_index=True)
 
 st.button(
     "Sync to Google Drive",
     on_click=upload_csv,
-    args=(drive, st.session_state["df"], "all_mp3_files.csv"),
+    args=(
+        st.session_state["drive_files"],
+        st.session_state["mp3_df"],
+        st.session_state["supabase"],
+    ),
     type="primary",
     icon=":material/add_to_drive:",
 )
+
+st.subheader("Link a File to a Book Order")
+orders = st.session_state.supabase.table("book_orders").select("*").execute().data
+order_df = (
+    pd.DataFrame(orders)
+    .query("mp3_file_id.isnull()")
+    .assign(stub=lambda x: x["inmate_name"] + " - " + x["id"].astype(str))
+)
+unclaimed_files = st.session_state["mp3_df"].query("id not in @order_df['mp3_file_id']")
+
+with st.form(key="link_form"):
+    order_stub = st.selectbox("Select an Order", order_df["stub"])
+    file_id = st.selectbox("Select a File ID", unclaimed_files["id"])
+    if st.form_submit_button(
+        "Link File to Order", type="primary", icon=":material/link:"
+    ):
+        order_id = order_df.query("stub == @order_stub")["id"].values[0]
+        st.session_state.supabase.table("book_orders").update(
+            {"mp3_file_id": file_id}
+        ).eq("id", order_id).execute()
+
+        st.success("File linked to order successfully.")

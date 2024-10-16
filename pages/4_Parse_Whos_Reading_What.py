@@ -112,3 +112,28 @@ orders_df = pd.DataFrame(
     )
 )
 st.dataframe(orders_df, hide_index=True)
+
+st.subheader("Secure Address Upload")
+
+up1, up2 = st.columns(2)
+
+with up1:
+    st.download_button(
+        label="Download to Add Adresses",
+        data=orders_df.to_csv(index=False),
+        file_name="book_orders_addresses_needed.xlsx",
+        mime="text/xlsx",
+        icon=":material/download_for_offline:",
+    )
+
+with up2:
+    uploaded_file = st.file_uploader("Upload Completed Addresses", type=["xlsx"])
+    if uploaded_file is not None:
+        uploaded_df = pd.read_excel(uploaded_file)
+        st.write(uploaded_df)
+        response = (
+            st.session_state.supabase.table("book_orders").upsert(uploaded_df).execute()
+        )
+        st.success("Addresses uploaded successfully!")
+        st.write(response)
+        st.write(response["data"])

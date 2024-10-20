@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+from blabel import LabelWriter
 
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
 
@@ -9,7 +10,10 @@ st.set_page_config(page_title="Create an Address Label", page_icon=JLM_LOGO)
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-html_template = open("address_label_template.html").read()
+if "labe_writer" not in st.session_state:
+    html_file = "templates/address_label_template.html"
+    css_file = "templates/address_label_template.css"
+    st.session_state.label_writer = LabelWriter(html_file, css_file)
 
 if "address" not in st.session_state:
     st.session_state.address = {}
@@ -23,6 +27,8 @@ with c2:
 st.subheader("Create an Address Label")
 
 with st.form(key="address_form"):
+    input_type = st.radio("Input Type", ["Manual", "Pick a Row"])
+
     name = st.text_input("Name")
     address = st.text_input("Address")
     address2 = st.text_input("Address Line 2")
@@ -47,11 +53,16 @@ with st.form(key="address_form"):
             unsafe_allow_html=True,
         )
 
-        st.session_state.address = {
-            "name": name,
-            "address_1": address,
-            "address_2": address2,
-            "city": city,
-            "state": state,
-            "zip": zip_code,
-        }
+        address = [
+            {
+                "logo": ".streamlit/jlm-logo.png",
+                "address_name": name,
+                "address_1": address,
+                "address_2": address2,
+                "city": city,
+                "state": state,
+                "zip": zip_code,
+            }
+        ]
+
+        st.session_state.label_writer.write_labels(address, target="test.pdf")

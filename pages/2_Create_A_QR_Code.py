@@ -55,7 +55,9 @@ def save_all_qr_codes(df):
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
     for row in df.itertuples():
-        qr_image_path = create_qr(row.link, f"{temp_dir}/{row.title.split('.')[0]}.png")
+        qr_image_path = create_qr(
+            row.link, f"{temp_dir}/{row.file_name.split('.')[0]}.png"
+        )
         qr = format_qr(qr_image_path)
         qr.save(f"{temp_dir}/{row.title.split('.')[0]}.png")
 
@@ -134,11 +136,9 @@ with create1:
         on_click=create_button,
     )
     if st.session_state["create"]:
-        url = (
-            st.session_state["df"]
-            .loc[st.session_state["df"]["title"] == choice, "link"]
-            .values[0]
-        )
+        url = st.session_state.df.loc[
+            st.session_state.df["file_name"] == choice, "link"
+        ].values[0]
         qr_image_path = create_qr(url)
         qr_image = format_qr(qr_image_path)
 

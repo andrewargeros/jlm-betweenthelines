@@ -20,6 +20,7 @@ if "address" not in st.session_state:
 
 if "authentication_status" not in st.session_state:
     st.session_state.authentication_status = False
+    st.error("Please authenticate from the home page to continue.")
 
 c1, c2 = st.columns([1, 5])
 

@@ -75,6 +75,7 @@ if "drive_files" not in st.session_state:
 
 if "authentication_status" not in st.session_state:
     st.session_state.authentication_status = False
+    st.error("Please authenticate from the home page to continue.")
 
 
 with open(".streamlit/style.css") as f:

@@ -84,6 +84,7 @@ def create_button():
 
 if "authentication_status" not in st.session_state:
     st.session_state.authentication_status = False
+    st.error("Please authenticate from the home page to continue.")
 
 st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 

@@ -49,7 +49,9 @@ for user in st.session_state.passwords_list:
 
 if "client_secrets.json" not in os.listdir("."):
     with open("client_secrets.json", "wb+") as f:
-        res = st.session_state.supabase.storage.from_("jlm-bucket").download()
+        res = st.session_state.supabase.storage.from_("jlm-bucket").download(
+            "client_secrets.json"
+        )
         f.write(res)
 
 

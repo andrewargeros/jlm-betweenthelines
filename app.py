@@ -55,7 +55,7 @@ if "client_secrets.json" not in os.listdir("."):
         f.write(res)
 
 if "mycreds.txt" not in os.listdir("."):
-    with open("mycreds.txt", "wb+") as f:
+    with open("mycreds.txt", "w") as f:
         f.write(st.secrets["GOOGLE_TOKEN"])
 
 

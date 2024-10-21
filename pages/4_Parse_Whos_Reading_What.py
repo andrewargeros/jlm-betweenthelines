@@ -34,6 +34,9 @@ if "books" not in st.session_state:
         .data
     )
 
+if "authentication_status" not in st.session_state:
+    st.session_state.authentication_status = False
+
 c1, c2 = st.columns([1, 5])
 with c1:
     st.image(JLM_LOGO, width=100)

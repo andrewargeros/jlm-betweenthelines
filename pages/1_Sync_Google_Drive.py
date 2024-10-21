@@ -73,6 +73,9 @@ if "drive_files" not in st.session_state:
         columns=["subfolder", "title", "id", "link"]
     )
 
+if "authentication_status" not in st.session_state:
+    st.session_state.authentication_status = False
+
 
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)

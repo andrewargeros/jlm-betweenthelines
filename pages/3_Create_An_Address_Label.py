@@ -18,6 +18,9 @@ if "labe_writer" not in st.session_state:
 if "address" not in st.session_state:
     st.session_state.address = {}
 
+if "authentication_status" not in st.session_state:
+    st.session_state.authentication_status = False
+
 c1, c2 = st.columns([1, 5])
 
 with c1:

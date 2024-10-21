@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 from pathlib import Path
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
 from PIL import Image
 from supabase import create_client, Client
 
@@ -18,60 +16,18 @@ def create_supa_client():
     return supabase
 
 
-@st.cache_resource
-def create_drive():
-    gauth = GoogleAuth()
-    gauth.LoadCredentialsFile("mycreds.txt")
-    drive = GoogleDrive(gauth)
-    return drive
+def get_mp3_files(supabase: Client) -> pd.DataFrame:
+    res = supabase.storage().from_("mp3-uploads").list()
+    return pd.DataFrame(res)
 
 
-def list_files(drive):
-    all_files = []
-    file_list = drive.ListFile(
-        {"q": "'19X1I-K__Oq-f_ADcbEZZk430X1JdK8Ib' in parents and trashed=false"}
-    ).GetList()
-    for file1 in file_list:
-        print("title: %s, id: %s" % (file1["title"], file1["id"]))
-        file_list2 = drive.ListFile(
-            {"q": "'%s' in parents and trashed=false" % file1["id"]}
-        ).GetList()
-        for file2 in file_list2:
-            if file2["title"].lower().endswith(".mp3"):
-                print(
-                    "title: %s, id: %s, link: %s"
-                    % (file2["title"], file2["id"], file2["alternateLink"])
-                )
-                entry = {
-                    "subfolder": file1["title"],
-                    "title": file2["title"],
-                    "id": file2["id"],
-                    "link": file2["alternateLink"],
-                }
-                all_files.append(entry)
-    return pd.DataFrame(all_files)
-
-
-def upload_csv(drive_df, supa_df, supabase):
-    upload = drive_df.query("id not in @supa_df['id']")
-    upload = upload[["id", "title", "link"]].to_dict(orient="records")
-    supabase.table("mp3_files").insert(upload).execute()
-
-
-st.set_page_config(page_title="Load Files from Drive", page_icon=JLM_LOGO)
+st.set_page_config(page_title="Upload and Sync MP3s", page_icon=JLM_LOGO)
 
 if "supabase" not in st.session_state:
     st.session_state.supabase = create_supa_client()
 
-if "mp3_df" not in st.session_state:
-    st.session_state.mp3_df = pd.DataFrame(
-        st.session_state.supabase.table("mp3_files").select("*").execute().data
-    )
-
-if "drive_files" not in st.session_state:
-    st.session_state.drive_files = pd.DataFrame(
-        columns=["subfolder", "title", "id", "link"]
-    )
+if "xsupabase_files" not in st.session_state:
+    st.session_state.xsupabase_files = get_mp3_files(st.session_state.supabase)
 
 if "authentication_status" not in st.session_state:
     st.session_state.authentication_status = False
@@ -87,36 +43,31 @@ with c1:
     st.image(JLM_LOGO, width=100)
 with c2:
     st.title("Between the Lines")
-st.subheader("Load Files from Google Drive")
+st.subheader("Upload and Sync MP3 Recording Files")
 
 
 if st.session_state["authentication_status"]:
-    drive = create_drive()
-    st.session_state["drive_files"] = pd.concat(
-        [st.session_state["drive_files"], list_files(drive)]
-    ).drop_duplicates()
 
-    st.dataframe(st.session_state["mp3_df"], hide_index=True)
+    st.subheader("Current Files in Database")
+    st.dataframe(st.session_state.xsupabase_files, hide_index=True)
 
-    foo = st.session_state["drive_files"].query(
-        "id not in @st.session_state['mp3_df']['id']"
-    )
+    u1, u2 = st.columns(2)
 
-    if not foo.empty:
-        st.markdown(f"Additional Files to Add: {len(foo)}")
-        st.dataframe(foo, hide_index=True)
+    with u1:
+        st.subheader("Upload MP3 File")
+        uploaded_file = st.file_uploader("Upload MP3 File", type=["mp3"])
+        if uploaded_file:
+            if type(uploaded_file) != list:
+                uploaded_file = [uploaded_file]
+            for file in uploaded_file:
+                st.session_state.supabase.storage().from_("mp3-uploads").upload(
+                    file.name, file.getvalue()
+                )
+            st.success(f"{len(uploaded_file)} File(s) uploaded successfully.")
 
-    st.button(
-        "Sync to Google Drive",
-        on_click=upload_csv,
-        args=(
-            st.session_state["drive_files"],
-            st.session_state["mp3_df"],
-            st.session_state["supabase"],
-        ),
-        type="primary",
-        icon=":material/add_to_drive:",
-    )
+    with u2:
+        if st.button("Sync Files", icon=":material/sync:"):
+            st.session_state.xsupabase_files = get_mp3_files(st.session_state.supabase)
 
     st.subheader("Link a File to a Book Order")
     orders = st.session_state.supabase.table("book_orders").select("*").execute().data
@@ -125,17 +76,17 @@ if st.session_state["authentication_status"]:
         .query("mp3_file_id.isnull()")
         .assign(stub=lambda x: x["inmate_name"] + " - " + x["id"].astype(str))
     )
-    unclaimed_files = st.session_state["mp3_df"].query(
+    unclaimed_files = st.session_state["xsupabase_files"].query(
         "id not in @order_df['mp3_file_id']"
     )
 
     with st.form(key="link_form"):
         order_stub = st.selectbox("Select an Order", order_df["stub"])
-        file_name = st.selectbox("Select a File ID", unclaimed_files["file_name"])
+        file_name = st.selectbox("Select a File ID", unclaimed_files["name"])
         if st.form_submit_button(
             "Link File to Order", type="primary", icon=":material/link:"
         ):
-            file_id = unclaimed_files.query("file_name == @file_name")["id"].values[0]
+            file_id = unclaimed_files.query("name == @file_name")["id"].values[0]
             order_id = order_df.query("stub == @order_stub")["id"].values[0]
             st.session_state.supabase.table("book_orders").update(
                 {"mp3_file_id": file_id}

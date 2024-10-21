@@ -2,9 +2,8 @@ import streamlit as st
 import pandas as pd
 import segno
 import os
+import pyshorteners
 from PIL import Image
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
 from io import BytesIO
 from datetime import datetime
 from supabase import create_client, Client
@@ -20,16 +19,8 @@ def create_supa_client():
     return supabase
 
 
-@st.cache_resource
-def create_drive():
-    gauth = GoogleAuth()
-    gauth.LoadCredentialsFile("../mycreds.txt")
-    drive = GoogleDrive(gauth)
-    return drive
-
-
 def create_qr(url, output="qr.png"):
-    qr = segno.make(url, error="h", version=10, micro=False)
+    qr = segno.make(url, error="h", version=4, micro=False)
     qr.save(output, scale=100)
     return output
 
@@ -50,46 +41,38 @@ def format_qr(qr_image_path):
     return qr_image
 
 
-def save_all_qr_codes(df):
+def save_all_qr_codes(df, supabase):
     temp_dir = f"media/{datetime.now().strftime('%Y%m%d%H%M%S')}"
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
     for row in df.itertuples():
-        qr_image_path = create_qr(
-            row.link, f"{temp_dir}/{row.file_name.split('.')[0]}.png"
-        )
+        url = supabase.storage().from_("mp3-uploads").get_public_url(row.name)
+        url = st.session_state.shortener.tinyurl.short(url)
+        qr_image_path = create_qr(url, f"{temp_dir}/{row.name.split('.')[0]}.png")
         qr = format_qr(qr_image_path)
-        qr.save(f"{temp_dir}/{row.title.split('.')[0]}.png")
+        qr.save(f"{temp_dir}/{row.name.split('.')[0]}.png")
 
     os.system(f"zip -r {temp_dir}.zip {temp_dir}")
     os.system(f"rm -rf {temp_dir}")
     return temp_dir + ".zip"
 
 
-def load_drive_csv(drive):
-    try:
-        file_id = "19X1I-K__Oq-f_ADcbEZZk430X1JdK8Ib"
-        file = drive.CreateFile({"id": file_id})
-        file.GetContentFile("all_mp3_files.csv")
-        return pd.read_csv("all_mp3_files.csv")
-    except:
-        return st.error(
-            "Error loading file from Google Drive-- Please try Syncing again."
-        )
-
-
 def create_button():
     st.session_state["create"] = True
 
 
-if "authentication_status" not in st.session_state:
-    st.session_state.authentication_status = False
-    st.error("Please authenticate from the home page to continue.")
+if "shortener" not in st.session_state:
+    st.session_state.shortener = pyshorteners.Shortener()
 
 st.set_page_config(page_title="Create a QR Code", page_icon=JLM_LOGO)
 
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+if "authentication_status" not in st.session_state:
+    st.session_state.authentication_status = False
+    st.error("Please authenticate from the home page to continue.")
+
 
 c1, c2 = st.columns([1, 5])
 
@@ -105,21 +88,18 @@ if "supabase" not in st.session_state:
 if "df" not in st.session_state:
     json_data = (
         st.session_state.supabase.table("book_orders")
-        .select(
-            "inmate_name, book_inventory(book_title), address_name, mp3_files(file_name, drive_link)"
-        )
+        .select("inmate_name, book_inventory(book_title), address_name, mp3_file_id")
         .execute()
         .data
     )
-    st.session_state.df = pd.json_normalize(json_data).drop(columns=["mp3_files"])
-    st.session_state.df.columns = [
-        "inmate_name",
-        "recipient",
-        "title",
-        "file_name",
-        "link",
-    ]
-    st.session_state.df = st.session_state.df.query("link.notnull()")
+    st.session_state.df = pd.DataFrame(json_data)
+    files = st.session_state.supabase.storage().from_("mp3-uploads").list()
+    files_df = pd.DataFrame(files)
+
+    st.session_state.df = st.session_state.df.merge(
+        files_df, left_on="mp3_file_id", right_on="id", how="inner"
+    )
+
 
 if "create" not in st.session_state:
     st.session_state.create = False
@@ -128,7 +108,7 @@ if st.session_state["authentication_status"]:
     st.dataframe(st.session_state["df"], hide_index=True)
 
     choice = st.selectbox(
-        "Select a file to create a QR code", st.session_state["df"]["file_name"]
+        "Select a file to create a QR code", st.session_state["df"]["name"]
     )
 
     create1, create2 = st.columns(2)
@@ -141,9 +121,13 @@ if st.session_state["authentication_status"]:
             on_click=create_button,
         )
         if st.session_state["create"]:
-            url = st.session_state.df.loc[
-                st.session_state.df["file_name"] == choice, "link"
-            ].values[0]
+            url = (
+                st.session_state.supabase.storage()
+                .from_("mp3-uploads")
+                .get_public_url(choice)
+            )
+            url = st.session_state.shortener.tinyurl.short(url)
+
             qr_image_path = create_qr(url)
             qr_image = format_qr(qr_image_path)
 
@@ -168,7 +152,9 @@ if st.session_state["authentication_status"]:
             icon=":material/downloading:",
             use_container_width=True,
         ):
-            zip_file_path = save_all_qr_codes(st.session_state["df"])
+            zip_file_path = save_all_qr_codes(
+                st.session_state["df"], st.session_state["supabase"]
+            )
             with open(zip_file_path, "rb") as fp:
                 st.download_button(
                     label="Download ZIP with all QR Codes",

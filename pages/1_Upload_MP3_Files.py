@@ -17,7 +17,7 @@ def create_supa_client():
 
 
 def get_mp3_files(supabase: Client) -> pd.DataFrame:
-    res = supabase.storage().from_("mp3-uploads").list()
+    res = supabase.storage.from_("mp3-uploads").list()
     return pd.DataFrame(res)
 
 
@@ -60,7 +60,7 @@ if st.session_state["authentication_status"]:
             if type(uploaded_file) != list:
                 uploaded_file = [uploaded_file]
             for file in uploaded_file:
-                st.session_state.supabase.storage().from_("mp3-uploads").upload(
+                st.session_state.supabase.storage.from_("mp3-uploads").upload(
                     file.name, file.getvalue()
                 )
             st.success(f"{len(uploaded_file)} File(s) uploaded successfully.")

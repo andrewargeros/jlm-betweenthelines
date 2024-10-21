@@ -46,7 +46,7 @@ def save_all_qr_codes(df, supabase):
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
     for row in df.itertuples():
-        url = supabase.storage().from_("mp3-uploads").get_public_url(row.name)
+        url = supabase.storage.from_("mp3-uploads").get_public_url(row.name)
         url = st.session_state.shortener.tinyurl.short(url)
         qr_image_path = create_qr(url, f"{temp_dir}/{row.name.split('.')[0]}.png")
         qr = format_qr(qr_image_path)
@@ -93,7 +93,7 @@ if "df" not in st.session_state:
         .data
     )
     st.session_state.df = pd.DataFrame(json_data)
-    files = st.session_state.supabase.storage().from_("mp3-uploads").list()
+    files = st.session_state.supabase.storage.from_("mp3-uploads").list()
     files_df = pd.DataFrame(files)
 
     st.session_state.df = st.session_state.df.merge(
@@ -121,10 +121,8 @@ if st.session_state["authentication_status"]:
             on_click=create_button,
         )
         if st.session_state["create"]:
-            url = (
-                st.session_state.supabase.storage()
-                .from_("mp3-uploads")
-                .get_public_url(choice)
+            url = st.session_state.supabase.storage.from_("mp3-uploads").get_public_url(
+                choice
             )
             url = st.session_state.shortener.tinyurl.short(url)
 

@@ -1,0 +1,14 @@
+credentials:
+  usernames:
+    jlm-user:
+      email: aargeros15@gmail.com
+      name: JLM User
+      password:
+    jlm-admin:
+      email: btladmin+aargeros15@gmail.com
+      name: JLM Admin
+      password:
+cookie:
+  expiry_days: 30
+  key: b36078c2a920717e1b99ca3dffcbf3a7
+  name: BetweenTheLines 

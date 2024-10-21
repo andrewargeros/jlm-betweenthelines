@@ -85,52 +85,56 @@ with c2:
     st.title("Between the Lines")
 st.subheader("Load Files from Google Drive")
 
-drive = create_drive()
-st.session_state["drive_files"] = pd.concat(
-    [st.session_state["drive_files"], list_files(drive)]
-).drop_duplicates()
 
-st.dataframe(st.session_state["mp3_df"], hide_index=True)
+if st.session_state["authentication_status"]:
+    drive = create_drive()
+    st.session_state["drive_files"] = pd.concat(
+        [st.session_state["drive_files"], list_files(drive)]
+    ).drop_duplicates()
 
+    st.dataframe(st.session_state["mp3_df"], hide_index=True)
 
-foo = st.session_state["drive_files"].query(
-    "id not in @st.session_state['mp3_df']['id']"
-)
+    foo = st.session_state["drive_files"].query(
+        "id not in @st.session_state['mp3_df']['id']"
+    )
 
-if not foo.empty:
-    st.markdown(f"Additional Files to Add: {len(foo)}")
-    st.dataframe(foo, hide_index=True)
+    if not foo.empty:
+        st.markdown(f"Additional Files to Add: {len(foo)}")
+        st.dataframe(foo, hide_index=True)
 
-st.button(
-    "Sync to Google Drive",
-    on_click=upload_csv,
-    args=(
-        st.session_state["drive_files"],
-        st.session_state["mp3_df"],
-        st.session_state["supabase"],
-    ),
-    type="primary",
-    icon=":material/add_to_drive:",
-)
+    st.button(
+        "Sync to Google Drive",
+        on_click=upload_csv,
+        args=(
+            st.session_state["drive_files"],
+            st.session_state["mp3_df"],
+            st.session_state["supabase"],
+        ),
+        type="primary",
+        icon=":material/add_to_drive:",
+    )
 
-st.subheader("Link a File to a Book Order")
-orders = st.session_state.supabase.table("book_orders").select("*").execute().data
-order_df = (
-    pd.DataFrame(orders)
-    .query("mp3_file_id.isnull()")
-    .assign(stub=lambda x: x["inmate_name"] + " - " + x["id"].astype(str))
-)
-unclaimed_files = st.session_state["mp3_df"].query("id not in @order_df['mp3_file_id']")
+    st.subheader("Link a File to a Book Order")
+    orders = st.session_state.supabase.table("book_orders").select("*").execute().data
+    order_df = (
+        pd.DataFrame(orders)
+        .query("mp3_file_id.isnull()")
+        .assign(stub=lambda x: x["inmate_name"] + " - " + x["id"].astype(str))
+    )
+    unclaimed_files = st.session_state["mp3_df"].query(
+        "id not in @order_df['mp3_file_id']"
+    )
 
-with st.form(key="link_form"):
-    order_stub = st.selectbox("Select an Order", order_df["stub"])
-    file_id = st.selectbox("Select a File ID", unclaimed_files["id"])
-    if st.form_submit_button(
-        "Link File to Order", type="primary", icon=":material/link:"
-    ):
-        order_id = order_df.query("stub == @order_stub")["id"].values[0]
-        st.session_state.supabase.table("book_orders").update(
-            {"mp3_file_id": file_id}
-        ).eq("id", order_id).execute()
+    with st.form(key="link_form"):
+        order_stub = st.selectbox("Select an Order", order_df["stub"])
+        file_name = st.selectbox("Select a File ID", unclaimed_files["file_name"])
+        if st.form_submit_button(
+            "Link File to Order", type="primary", icon=":material/link:"
+        ):
+            file_id = unclaimed_files.query("file_name == @file_name")["id"].values[0]
+            order_id = order_df.query("stub == @order_stub")["id"].values[0]
+            st.session_state.supabase.table("book_orders").update(
+                {"mp3_file_id": file_id}
+            ).eq("id", order_id).execute()
 
-        st.success("File linked to order successfully.")
+            st.success("File linked to order successfully.")

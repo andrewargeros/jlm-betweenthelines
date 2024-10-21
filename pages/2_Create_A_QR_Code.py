@@ -120,56 +120,57 @@ if "df" not in st.session_state:
 if "create" not in st.session_state:
     st.session_state.create = False
 
-st.dataframe(st.session_state["df"], hide_index=True)
+if st.session_state["authentication_status"]:
+    st.dataframe(st.session_state["df"], hide_index=True)
 
-choice = st.selectbox(
-    "Select a file to create a QR code", st.session_state["df"]["file_name"]
-)
-
-create1, create2 = st.columns(2)
-with create1:
-    st.button(
-        "Create QR Code",
-        type="primary",
-        icon=":material/qr_code_2_add:",
-        use_container_width=True,
-        on_click=create_button,
+    choice = st.selectbox(
+        "Select a file to create a QR code", st.session_state["df"]["file_name"]
     )
-    if st.session_state["create"]:
-        url = st.session_state.df.loc[
-            st.session_state.df["file_name"] == choice, "link"
-        ].values[0]
-        qr_image_path = create_qr(url)
-        qr_image = format_qr(qr_image_path)
 
-        st.image(qr_image.resize((6 * 300, 6 * 300)), width=300)
-
-        file_name = st.text_input("Enter the file name", value="qr.png")
-        qr_image_buffer = BytesIO()
-        qr_image.save(qr_image_buffer, format="PNG")
-        st.download_button(
-            "Download QR Code",
-            qr_image_buffer.getvalue(),
-            file_name,
-            icon=":material/download:",
-            mime="image/png",
+    create1, create2 = st.columns(2)
+    with create1:
+        st.button(
+            "Create QR Code",
+            type="primary",
+            icon=":material/qr_code_2_add:",
             use_container_width=True,
+            on_click=create_button,
         )
+        if st.session_state["create"]:
+            url = st.session_state.df.loc[
+                st.session_state.df["file_name"] == choice, "link"
+            ].values[0]
+            qr_image_path = create_qr(url)
+            qr_image = format_qr(qr_image_path)
 
-with create2:
-    if st.button(
-        "Save All QR Codes",
-        type="primary",
-        icon=":material/downloading:",
-        use_container_width=True,
-    ):
-        zip_file_path = save_all_qr_codes(st.session_state["df"])
-        with open(zip_file_path, "rb") as fp:
+            st.image(qr_image.resize((6 * 300, 6 * 300)), width=300)
+
+            file_name = st.text_input("Enter the file name", value="qr.png")
+            qr_image_buffer = BytesIO()
+            qr_image.save(qr_image_buffer, format="PNG")
             st.download_button(
-                label="Download ZIP with all QR Codes",
-                data=fp,
-                file_name=zip_file_path.split("/")[-1],
-                mime="application/zip",
+                "Download QR Code",
+                qr_image_buffer.getvalue(),
+                file_name,
                 icon=":material/download:",
+                mime="image/png",
+                use_container_width=True,
             )
-        st.balloons()
+
+    with create2:
+        if st.button(
+            "Save All QR Codes",
+            type="primary",
+            icon=":material/downloading:",
+            use_container_width=True,
+        ):
+            zip_file_path = save_all_qr_codes(st.session_state["df"])
+            with open(zip_file_path, "rb") as fp:
+                st.download_button(
+                    label="Download ZIP with all QR Codes",
+                    data=fp,
+                    file_name=zip_file_path.split("/")[-1],
+                    mime="application/zip",
+                    icon=":material/download:",
+                )
+            st.balloons()

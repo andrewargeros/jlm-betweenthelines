@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import streamlit_authenticator as stauth
 import yaml
+import os
 from supabase import create_client, Client
 
 
@@ -45,6 +46,12 @@ for user in st.session_state.passwords_list:
     st.session_state.users["credentials"]["usernames"][user["user_name"]][
         "password"
     ] = user["hashed_password"]
+
+if "client_secrets.json" not in os.listdir("."):
+    with open("client_secrets.json", "wb+") as f:
+        res = st.session_state.supabase.storage.from_("jlm-bucket").download()
+        f.write(res)
+
 
 authenticator = stauth.Authenticate(
     st.session_state.users["credentials"],

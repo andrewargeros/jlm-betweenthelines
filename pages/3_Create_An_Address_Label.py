@@ -26,43 +26,44 @@ with c2:
     st.title("Between the Lines")
 st.subheader("Create an Address Label")
 
-with st.form(key="address_form"):
-    input_type = st.radio("Input Type", ["Manual", "Pick a Row"])
+if st.session_state["authentication_status"]:
+    with st.form(key="address_form"):
+        input_type = st.radio("Input Type", ["Manual", "Pick a Row"])
 
-    name = st.text_input("Name")
-    address = st.text_input("Address")
-    address2 = st.text_input("Address Line 2")
-    a1, a2, a3 = st.columns(3)
-    with a1:
-        city = st.text_input("City")
-    with a2:
-        state = st.text_input("State")
-    with a3:
-        zip_code = st.text_input("Zip Code")
+        name = st.text_input("Name")
+        address = st.text_input("Address")
+        address2 = st.text_input("Address Line 2")
+        a1, a2, a3 = st.columns(3)
+        with a1:
+            city = st.text_input("City")
+        with a2:
+            state = st.text_input("State")
+        with a3:
+            zip_code = st.text_input("Zip Code")
 
-    if st.form_submit_button(
-        "Create Address Label", type="primary", icon=":material/local_shipping:"
-    ):
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
-                <h3>{name}</h3>
-                <p>{address}</p>
-                <p>{address2}</p>
-                <p>{city}, {state} {zip_code}</p>""",
-            unsafe_allow_html=True,
-        )
+        if st.form_submit_button(
+            "Create Address Label", type="primary", icon=":material/local_shipping:"
+        ):
+            st.markdown(
+                f"""
+                <div style="text-align: center;">
+                    <h3>{name}</h3>
+                    <p>{address}</p>
+                    <p>{address2}</p>
+                    <p>{city}, {state} {zip_code}</p>""",
+                unsafe_allow_html=True,
+            )
 
-        address = [
-            {
-                "logo": ".streamlit/jlm-logo.png",
-                "address_name": name,
-                "address_1": address,
-                "address_2": address2,
-                "city": city,
-                "state": state,
-                "zip": zip_code,
-            }
-        ]
+            address = [
+                {
+                    "logo": ".streamlit/jlm-logo.png",
+                    "address_name": name,
+                    "address_1": address,
+                    "address_2": address2,
+                    "city": city,
+                    "state": state,
+                    "zip": zip_code,
+                }
+            ]
 
-        st.session_state.label_writer.write_labels(address, target="test.pdf")
+            st.session_state.label_writer.write_labels(address, target="test.pdf")

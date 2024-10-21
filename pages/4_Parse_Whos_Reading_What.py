@@ -49,7 +49,7 @@ if st.session_state["authentication_status"]:
 
     with st.form(key="address_form"):
         st.markdown("#### Order Information")
-        inmate_name = st.text_input("Inmate Name")
+        inmate_name = st.text_input("Incarcerated Person's Name")
         book_title = st.selectbox("Book Title", st.session_state.books["book_title"])
 
         st.markdown("#### Address")

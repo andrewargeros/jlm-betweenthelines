@@ -87,9 +87,9 @@ if st.session_state["authentication_status"]:
 
     with g1:
         st.page_link(
-            "pages/1_Sync_Google_Drive.py",
-            label="**Sync** Files from Google Drive",
-            icon=":material/add_to_drive:",
+            "pages/1_Upload_MP3_Files.py",
+            label="**Upload** and **Sync** MP3s",
+            icon=":material/library_add:",
             use_container_width=True,
         )
         st.page_link(

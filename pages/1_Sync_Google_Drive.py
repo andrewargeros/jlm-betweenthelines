@@ -21,7 +21,7 @@ def create_supa_client():
 @st.cache_resource
 def create_drive():
     gauth = GoogleAuth()
-    gauth.LoadCredentialsFile("../mycreds.txt")
+    gauth.LoadCredentialsFile("mycreds.txt")
     drive = GoogleDrive(gauth)
     return drive
 

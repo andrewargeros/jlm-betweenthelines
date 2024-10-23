@@ -75,6 +75,7 @@ if st.session_state["authentication_status"]:
         pd.DataFrame(orders)
         .query("mp3_file_id.isnull()")
         .assign(stub=lambda x: x["inmate_name"] + " - " + x["id"].astype(str))
+        .sort_values("id")
     )
     unclaimed_files = st.session_state["xsupabase_files"].query(
         "id not in @order_df['mp3_file_id']"
@@ -91,5 +92,9 @@ if st.session_state["authentication_status"]:
             st.session_state.supabase.table("book_orders").update(
                 {"mp3_file_id": file_id}
             ).eq("id", order_id).execute()
+            st.write(
+                f"""Order ID: {order_id}, {order_stub}, 
+                File ID: {file_id} {file_name}"""
+            )
 
             st.success("File linked to order successfully.")

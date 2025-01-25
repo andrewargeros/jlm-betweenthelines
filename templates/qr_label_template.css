@@ -1,0 +1,54 @@
+/* @page {
+    width: 2.625in;
+    height: 1in;
+    padding: 0.5mm;
+    margin: 0;
+} */
+
+@page {
+    height: 11in;
+    width: 8.5in;
+    padding: auto;
+    margin: auto;
+}
+
+.big_table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    border: none;
+}
+
+.label_cell {
+    width: 2.625in;
+    height: 1in;
+    padding: 0.5mm;
+    margin: 0;
+    /* border: 1px solid black; */
+    vertical-align: top;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0.05in;
+    border: 0.1px solid black;
+    overflow: hidden;
+}
+
+.label_cell.separator {
+    width: 0.12in;
+}
+
+img {
+    height: 0.8in;
+    display: inline-block;
+    vertical-align: left;
+    image-rendering: pixelated;
+}
+
+.label {
+    font-family: Verdana;
+    font-weight: bold;
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 12px;
+}

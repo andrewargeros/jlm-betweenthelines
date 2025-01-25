@@ -15,7 +15,7 @@ def create_supa_client():
 JLM_LOGO = Image.open(".streamlit/jlm-logo.png")
 
 
-st.set_page_config(page_title="Parse Who's Reading What", page_icon=JLM_LOGO)
+st.set_page_config(page_title="Book Orders", page_icon=JLM_LOGO)
 
 with open(".streamlit/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)

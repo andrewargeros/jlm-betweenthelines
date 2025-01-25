@@ -114,7 +114,7 @@ if st.session_state["authentication_status"]:
         )
         st.page_link(
             "pages/4_Parse_Whos_Reading_What.py",
-            label="**Parse Who's Reading What**",
+            label="**Book Orders**",
             icon=":material/menu_book:",
             use_container_width=True,
         )

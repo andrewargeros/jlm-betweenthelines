@@ -87,9 +87,9 @@ if st.session_state["authentication_status"]:
 
     with g1:
         st.page_link(
-            "pages/1_Upload_MP3_Files.py",
-            label="**Upload** and **Sync** MP3s",
-            icon=":material/library_add:",
+            "pages/1_Manage_Book_Orders.py",
+            label="**Manage Book Orders**",
+            icon=":material/menu_book:",
             use_container_width=True,
         )
         st.page_link(
@@ -112,9 +112,10 @@ if st.session_state["authentication_status"]:
             icon=":material/qr_code_scanner:",
             use_container_width=True,
         )
+
         st.page_link(
-            "pages/4_Parse_Whos_Reading_What.py",
-            label="**Book Orders**",
-            icon=":material/menu_book:",
+            "pages/4_Upload_MP3_Files.py",
+            label="**Upload** and **Sync** MP3s (**Admin Only**)",
+            icon=":material/library_add:",
             use_container_width=True,
         )

@@ -48,8 +48,13 @@ if st.session_state["authentication_status"]:
     st.subheader("Create a New Book Order")
 
     with st.form(key="address_form"):
+        st.markdown("#### Upload MP3 File")
+        uploaded_file = st.file_uploader("Upload MP3 File", type=["mp3", "MP3"])
         st.markdown("#### Order Information")
-        inmate_name = st.text_input("Incarcerated Person's Name")
+        inmate_name = st.text_input(
+            "Book Order Name",
+            value=uploaded_file.name.split(".")[0] if uploaded_file else "",
+        )
         book_title = st.selectbox("Book Title", st.session_state.books["book_title"])
 
         st.markdown("#### Address")
